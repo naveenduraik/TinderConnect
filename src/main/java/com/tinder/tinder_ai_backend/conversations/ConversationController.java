@@ -3,6 +3,7 @@ package com.tinder.tinder_ai_backend.conversations;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.tinder.tinder_ai_backend.profiles.Profile;
 import com.tinder.tinder_ai_backend.profiles.ProfileRepository;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class ConversationController {
     @PostMapping("/conversations")
     public Conversation createConversation(@RequestBody CreateConversationRequest request){
 
-        profileRepository.findById(request.profileId())
+         profileRepository.findById(request.profileId())
             .orElseThrow(()->
             new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
@@ -61,6 +62,7 @@ public class ConversationController {
         )
         );
 
+        
         profileRepository.findById(chatMessage.authorId())
         .orElseThrow(()->
         new ResponseStatusException(
