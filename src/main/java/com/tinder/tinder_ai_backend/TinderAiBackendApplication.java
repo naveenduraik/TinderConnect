@@ -19,6 +19,7 @@ import com.tinder.tinder_ai_backend.conversations.Conversation;
 import com.tinder.tinder_ai_backend.conversations.ConversationRepository;
 import com.tinder.tinder_ai_backend.profiles.Gender;
 import com.tinder.tinder_ai_backend.profiles.Profile;
+import com.tinder.tinder_ai_backend.profiles.ProfileCreationService;
 import com.tinder.tinder_ai_backend.profiles.ProfileRepository;
 
 @SpringBootApplication
@@ -35,6 +36,8 @@ public class TinderAiBackendApplication implements CommandLineRunner{
 	@Autowired
 	private OpenAiChatClient openAiChatClient;
 
+	
+
 	public static void main(String[] args) {
 		SpringApplication.run(TinderAiBackendApplication.class, args);
 	}
@@ -42,12 +45,13 @@ public class TinderAiBackendApplication implements CommandLineRunner{
 	public void run(String... args){
 	
 		try{
-			Prompt prompt = new Prompt("Who is Indian Prime minister?");
+			Prompt prompt = new Prompt("Is there a product named leetcode?");
 			ChatResponse chatResponse =  openAiChatClient.call(prompt);
 			System.out.println(chatResponse.getResult().getOutput()); 
 		}catch (NonTransientAiException e){
 			System.out.println(e.getMessage());
 		}
+
 		profileRepository.deleteAll();
 		conversationRepository.deleteAll();
 		Profile profile = new Profile("1", "NaveenDurai", 
