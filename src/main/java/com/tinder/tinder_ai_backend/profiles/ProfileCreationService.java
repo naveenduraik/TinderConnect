@@ -1,5 +1,6 @@
 package com.tinder.tinder_ai_backend.profiles;
 
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +41,7 @@ public class ProfileCreationService {
 
     private List<Profile> generatedProfiles = new ArrayList<>();
 
-    private static final String PROFILES_FILE_PATH = "profiles.json";
+    private static final String PROFILES_FILE_PATH = "target/profiles.json";
 
     @Value("${startup-actions.initializeProfiles}")
     private Boolean initializeProfiles;
@@ -141,12 +142,10 @@ public class ProfileCreationService {
         );
         String randomSelfieType = getRandomElement(selfieTypes());
 
-        String prompt = STR."Selfie of a \{profile.age()} year old \{profile.myersBriggsPersonalityType()} \{profile.ethnicity()} \{profile.gender()}, \{randomSelfieType}, photorealistic skin texture and details, individual hairs and pores visible, highly detailed, photorealistic, hyperrealistic, subsurface scattering, 4k DSLR, ultrarealistic, best quality, masterpiece. Bio- \{profile.bio()}";
+        String prompt = "Selfie of a " + profile.age() + " year old " + profile.myersBriggsPersonalityType() + " " + profile.ethnicity() + " " + profile.gender() + ", " + randomSelfieType + ", photorealistic skin texture and details, individual hairs and pores visible, highly detailed, photorealistic, hyperrealistic, subsurface scattering, 4k DSLR, ultrarealistic, best quality, masterpiece. Bio- " + profile.bio();
         String negativePrompt = "multiple faces, lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, username, watermark, signature";
-        String jsonString = STR."""
-        { "prompt": "\{prompt}", "negative_prompt": "\{negativePrompt}", "steps":40 }
-        """;
-        System.out.println(STR."Creating image for \{profile.firstName()} \{profile.lastName()}(\{profile.ethnicity()})");
+        String jsonString = "{ \"prompt\": \"" + prompt + "\", \"negative_prompt\": \"" + negativePrompt + "\", \"steps\":40 }";
+        System.out.println("Creating image for " + profile.firstName() + " " + profile.lastName() + "(" + profile.ethnicity() + ")");
 
         // Make a POST request to the Stable diffusion URL
         HttpRequest httpRequest = this.stableDiffusionRequestBuilder.POST(
@@ -165,7 +164,7 @@ public class ProfileCreationService {
         Gson gson = new Gson();
         ImageResponse imageResponse = gson.fromJson(response.body(), ImageResponse.class);
         if (imageResponse.images() != null && !imageResponse.images().isEmpty()) {
-            String base64Image = imageResponse.images().getFirst();
+            String base64Image = imageResponse.images().get(0);
 
             // Decode Base64 to binary
             byte[] imageBytes = Base64.getDecoder().decode(base64Image);
